@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: configuration-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/MrKami-Kirill/config-repo
+          default-label: main
+          search-paths: '{application}'
+          username: mrkami19940@gmail.com
+          password: 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
+        encrypt:
+          enabled: false
+
+server:
+  port: 8888
