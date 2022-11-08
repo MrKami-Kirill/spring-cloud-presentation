@@ -1,6 +1,16 @@
 server:
   port: 8890
 
+#actuator
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health,env,prometheus
+
 spring:
   application:
     name: proxy-module
@@ -11,12 +21,6 @@ spring:
       probability: 100
   zipkin:
     base-url: http://localhost:9411
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'
 
 eureka:
   client:

@@ -1,12 +1,12 @@
 package spring.cloud.handler.component;
 
-import static ru.rtech.util.Constants.ERROR_MAP_KEY;
-import static ru.rtech.util.Constants.MESSAGE_MAP_KEY;
-import static ru.rtech.util.Constants.STACK_TRACE_MAP_KEY;
-import static ru.rtech.util.Constants.STATUS_MAP_KEY;
-import static ru.rtech.util.Error.EX_NOT_FOUND;
-import static ru.rtech.util.Error.EX_SYSTEM_ERROR;
-import static ru.rtech.util.Error.EX_VALIDATION_ERROR;
+import static spring.cloud.util.Constants.ERROR_MAP_KEY;
+import static spring.cloud.util.Constants.MESSAGE_MAP_KEY;
+import static spring.cloud.util.Constants.STACK_TRACE_MAP_KEY;
+import static spring.cloud.util.Constants.STATUS_MAP_KEY;
+import static spring.cloud.util.Error.EX_NOT_FOUND;
+import static spring.cloud.util.Error.EX_SYSTEM_ERROR;
+import static spring.cloud.util.Error.EX_VALIDATION_ERROR;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -16,9 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ResponseStatusException;
-import ru.rtech.exception.ValidationException;
-import ru.rtech.exception.WebClientException;
-import ru.rtech.util.ErrorResponse;
+import spring.cloud.exception.ValidationException;
+import spring.cloud.exception.WebClientException;
+import spring.cloud.util.ErrorResponse;
 
 @Component
 public class GlobalErrorAttributes extends DefaultErrorAttributes {

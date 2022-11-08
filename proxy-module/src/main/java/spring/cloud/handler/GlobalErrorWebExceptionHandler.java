@@ -5,12 +5,10 @@ import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 import static org.springframework.web.reactive.function.server.RequestPredicates.all;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 import static org.springframework.web.reactive.function.server.ServerResponse.status;
-import static ru.rtech.util.Constants.ERROR_MAP_KEY;
-import static ru.rtech.util.Constants.MESSAGE_MAP_KEY;
-import static ru.rtech.util.Constants.STACK_TRACE_MAP_KEY;
-import static ru.rtech.util.Constants.STATUS_MAP_KEY;
-import static ru.rtech.util.HttpUtil.headers;
-import static ru.rtech.util.HttpUtil.requestIdHeaderMap;
+import static spring.cloud.util.Constants.ERROR_MAP_KEY;
+import static spring.cloud.util.Constants.MESSAGE_MAP_KEY;
+import static spring.cloud.util.Constants.STACK_TRACE_MAP_KEY;
+import static spring.cloud.util.Constants.STATUS_MAP_KEY;
 
 import java.util.Map;
 import org.springframework.boot.autoconfigure.web.WebProperties.Resources;
@@ -26,8 +24,8 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-import ru.rtech.handler.component.GlobalErrorAttributes;
-import ru.rtech.util.ErrorResponse;
+import spring.cloud.handler.component.GlobalErrorAttributes;
+import spring.cloud.util.ErrorResponse;
 
 @Component
 @Order(-2)
@@ -48,7 +46,7 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
     private Mono<ServerResponse> renderErrorResponse(final ServerRequest request) {
         final Map<String, Object> map = getErrorAttributes(request, ErrorAttributeOptions.defaults());
         return status((HttpStatus) map.get(STATUS_MAP_KEY)).contentType(APPLICATION_JSON)
-                .headers(headers(requestIdHeaderMap(request))).body(fromValue(createErrorResponse(map)));
+                .body(fromValue(createErrorResponse(map)));
     }
 
     private ErrorResponse createErrorResponse(Map<String, Object> map) {

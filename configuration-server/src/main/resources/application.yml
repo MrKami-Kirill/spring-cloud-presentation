@@ -1,3 +1,16 @@
+server:
+  port: 8888
+
+#actuator
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health,env,prometheus
+
 spring:
   application:
     name: configuration-server
@@ -12,6 +25,4 @@ spring:
           password: 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
         encrypt:
           enabled: false
-
-server:
-  port: 8888
+        default-profile: default

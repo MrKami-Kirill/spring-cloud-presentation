@@ -6,6 +6,7 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import reactor.core.publisher.Mono;
+import spring.cloud.exception.ValidationException;
 
 @Component
 @RequiredArgsConstructor
