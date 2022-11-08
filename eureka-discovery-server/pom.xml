@@ -17,13 +17,18 @@
 	<properties>
 		<java.version>17</java.version>
 		<spring-cloud.version>2021.0.5</spring-cloud.version>
+		<spring-cloud-starter-zipkin.version>2.2.8.RELEASE</spring-cloud-starter-zipkin.version>
+		<micrometer-registry-prometheus.version>1.10.0</micrometer-registry-prometheus.version>
 	</properties>
 
 	<dependencies>
+		<!-- SPRING CORE -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
+
+		<!-- SPRING CLOUD -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
@@ -31,13 +36,17 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-zipkin</artifactId>
-			<version>2.2.8.RELEASE</version>
+			<version>${spring-cloud-starter-zipkin.version}</version>
 		</dependency>
+
+		<!-- PROMETHEUS -->
 		<dependency>
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-prometheus</artifactId>
-			<version>1.10.0</version>
+			<version>${micrometer-registry-prometheus.version}</version>
 		</dependency>
+
+		<!-- TESTS -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

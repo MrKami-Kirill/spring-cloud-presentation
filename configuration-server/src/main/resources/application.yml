@@ -22,7 +22,7 @@ spring:
           default-label: main
           search-paths: '{application}'
           username: mrkami19940@gmail.com
-          password: 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
+          password: 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
         encrypt:
           enabled: false
         default-profile: default

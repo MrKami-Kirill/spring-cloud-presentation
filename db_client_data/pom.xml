@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>spring.cloud</groupId>
+    <artifactId>db_client_data</artifactId>
+    <version>1.0</version>
+    <packaging>pom</packaging>
+    <name>db_client_data</name>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <slf4j.version>2.0.3</slf4j.version>
+        <logback.version>1.4.4</logback.version>
+        <liquibase.version>4.17.2</liquibase.version>
+        <postgresql.version>42.5.0</postgresql.version>
+        <snakeyaml.version>1.33</snakeyaml.version>
+        <postgres.schema.name>db_client_data</postgres.schema.name>
+    </properties>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.5</version>
+    </parent>
+
+    <dependencies>
+        <!--Logging-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+        <!--JDBC drivers-->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>${liquibase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>${snakeyaml.version}</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>${liquibase.version}</version>
+                <configuration>
+                    <!--suppress UnresolvedMavenProperty -->
+                    <url>${postgres.url}</url>
+                    <!--suppress UnresolvedMavenProperty -->
+                    <username>${postgres.username}</username>
+                    <!--suppress UnresolvedMavenProperty -->
+                    <password>${postgres.password}</password>
+                    <!--propertyFile>config/liquibase.properties</propertyFile-->
+                    <changeLogFile>changelog/changelog.xml</changeLogFile>
+                    <dataDir>changelog/db</dataDir>
+                    <defaultSchemaName>${postgres.schema.name}</defaultSchemaName>
+                    <outputDefaultSchema>true</outputDefaultSchema>
+                    <!-- log  -->
+                    <verbose>true</verbose>
+                    <logging>debug</logging>
+                    <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
