@@ -21,8 +21,6 @@ spring:
           uri: https://github.com/MrKami-Kirill/config-repo
           default-label: main
           search-paths: '{application}'
-          username: mrkami19940@gmail.com
-          password: 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
         encrypt:
           enabled: false
         default-profile: default
