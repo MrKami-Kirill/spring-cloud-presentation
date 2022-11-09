@@ -20,6 +20,7 @@
     <postgresql.version>42.5.0</postgresql.version>
     <reactor-pool.version>0.2.10</reactor-pool.version>
     <r2dbc-postgresql.version>0.8.13.RELEASE</r2dbc-postgresql.version>
+    <spring-cloud-starter-zipkin.version>2.2.8.RELEASE</spring-cloud-starter-zipkin.version>
     <feign-reactor-spring-cloud-starter.version>3.2.6</feign-reactor-spring-cloud-starter.version>
     <micrometer-registry-prometheus.version>1.10.0</micrometer-registry-prometheus.version>
   </properties>
@@ -72,6 +73,11 @@
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-zipkin</artifactId>
+      <version>${spring-cloud-starter-zipkin.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.cloud</groupId>
