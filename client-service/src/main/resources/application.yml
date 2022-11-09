@@ -1,6 +1,10 @@
 server:
   port: 8891
 
+logging:
+  level:
+    ROOT: ERROR
+
 #actuator
 management:
   endpoint:
@@ -14,8 +18,13 @@ management:
 spring:
   application:
     name: client-service
+  banner:
+    location: banner
   config:
     import: optional:configserver:http://localhost:8888
+  main:
+    allow-bean-definition-overriding: true
+    web-application-type: reactive
   sleuth:
     sampler:
       probability: 100
@@ -34,3 +43,26 @@ eureka:
     lease-expiration-duration-in-seconds: 90
     instance-id: ${spring.application.name}:${server.port}
     prefer-ip-address: true
+
+db:
+  database: db_client_data
+  schema: db_client_data
+  application-name: client-service
+  pool:
+    enabled: true
+    initial-size: 6
+    max-size: 6
+    max-idle-time: 301m
+    max-acquire-time: 2m
+    max-life-time: 301m
+
+api:
+  path:
+    additional: /client-service
+    clients: /clients
+    client-by-id: /clients/<clientId>
+    client-contacts: /clients/<clientId>/contacts
+    add-client: /clients
+    change-client: /clients/<clientId>
+    delete-client: /clients/<clientId>
+    delete-client-contact: /clients/<clientId>/contacts/<contactId>
