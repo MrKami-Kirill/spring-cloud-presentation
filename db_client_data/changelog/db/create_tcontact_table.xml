@@ -3,8 +3,34 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
+  <changeSet id="create_contact_type" author="galeev.kirill">
+    <sql>
+      CREATE TYPE db_client_data.contact_type AS ENUM ('EMAIL', 'MOBILE', 'LANDLINE');
+    </sql>
+    <rollback>
+      DROP TYPE db_client_data.contact_type;
+    </rollback>
+  </changeSet>
+
   <changeSet id="create_tcontact_table" author="galeev.kirill">
-    <rollback/>
+    <createTable schemaName="db_client_data" tableName="tcontact">
+      <column name="id" type="bigserial">
+        <constraints primaryKey="true" primaryKeyName="pktcontact_id"/>
+      </column>
+      <column name="value" type="varchar(100)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="contact_type" type="db_client_data.contact_type">
+        <constraints nullable="false"/>
+      </column>
+      <column name="tclient_id" type="bigserial">
+        <constraints foreignKeyName="fktclient_tcontact_id"
+          references="tclient(id)"/>
+      </column>
+    </createTable>
+    <rollback>
+      <dropTable schemaName="db_client_data" tableName="tcontact"/>
+    </rollback>
   </changeSet>
 
 </databaseChangeLog>

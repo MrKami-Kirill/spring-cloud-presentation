@@ -3,7 +3,7 @@ server:
 
 logging:
   level:
-    ROOT: ERROR
+    ROOT: INFO
 
 #actuator
 management:
@@ -18,13 +18,23 @@ management:
 spring:
   application:
     name: configuration-server
+  banner:
+    location: banner
   cloud:
     config:
       server:
         git:
           uri: https://github.com/MrKami-Kirill/config-repo
-          default-label: main
+          default-label: master
+          clone-on-start: true
           search-paths: '{application}'
         encrypt:
-          enabled: false
+          enabled: true
         default-profile: default
+  security:
+    user:
+      name: root
+      password: root
+
+encrypt:
+  key: mySecretKey

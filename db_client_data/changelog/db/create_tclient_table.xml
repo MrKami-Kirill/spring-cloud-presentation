@@ -4,7 +4,24 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
   <changeSet id="create_tclient_table" author="galeev.kirill">
-    <rollback/>
+    <createTable schemaName="db_client_data" tableName="tclient">
+      <column name="id" type="bigserial">
+        <constraints primaryKey="true" primaryKeyName="pkttclient_id"/>
+      </column>
+      <column name="sur_name" type="varchar(100)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="first_name" type="varchar(100)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="middle_name" type="varchar(100)"/>
+      <column name="birth_day" type="date">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <rollback>
+      <dropTable schemaName="db_client_data" tableName="tclient"/>
+    </rollback>
   </changeSet>
 
 </databaseChangeLog>

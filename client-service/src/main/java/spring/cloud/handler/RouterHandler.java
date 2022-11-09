@@ -3,6 +3,9 @@ package spring.cloud.handler;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
+import static spring.cloud.model.entity.mapper.TClientMapper.fromAddClientDto;
+import static spring.cloud.model.entity.mapper.TClientMapper.fromChangeClientDto;
+import static spring.cloud.model.entity.mapper.TContactMapper.fromAddContactDto;
 import static spring.cloud.util.MonoHelper.optionalMono;
 import static spring.cloud.util.MonoHelper.optionalMonoFromFlux;
 
@@ -13,11 +16,13 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 import spring.cloud.model.dto.request.AddClient;
+import spring.cloud.model.dto.request.AddContact;
 import spring.cloud.model.dto.request.ChangeClient;
 import spring.cloud.model.dto.response.ClientContactsResponse;
 import spring.cloud.model.dto.response.ClientResponse;
 import spring.cloud.model.dto.response.ClientsResponse;
 import spring.cloud.model.entity.TClient;
+import spring.cloud.model.entity.TContact;
 import spring.cloud.model.mapper.ClientContactsResponseMapper;
 import spring.cloud.model.mapper.ClientResponseMapper;
 import spring.cloud.model.mapper.ClientsResponseMapper;
@@ -31,6 +36,7 @@ public class RouterHandler {
     private final TClientRepository tClientRepository;
     private final TContactRepository tContactRepository;
     private final ValidationHandler<AddClient> addClientValidationHandler;
+    private final ValidationHandler<AddContact> addContactValidationHandler;
 
     public Mono<ServerResponse> getClients(ServerRequest request) {
         return ok().contentType(APPLICATION_JSON)
@@ -57,34 +63,82 @@ public class RouterHandler {
         return ok().contentType(APPLICATION_JSON)
                 .body(fromPublisher(addClientValidationHandler.validate(request.bodyToMono(AddClient.class),
                                 AddClient.class)
-                        .flatMap(req -> tClientRepository.save(new TClient(req)))
+                        .flatMap(req -> tClientRepository.save(fromAddClientDto(req)))
                         .map(TClient::getId), Long.class));
     }
 
     public Mono<ServerResponse> changeClient(ServerRequest request) {
-        String clientId = request.pathVariable("clientId");
+        Long clientId = Long.valueOf(request.pathVariable("clientId"));
         return ok().contentType(APPLICATION_JSON)
                 .body(fromPublisher(request.bodyToMono(ChangeClient.class)
                                 .flatMap(req -> Mono.zip(Mono.just(req),
-                                        optionalMono(tClientRepository.findById(Long.valueOf(clientId)))))
-                                .map(zip -> {
-                                    ChangeClient changeClient = zip.getT1();
+                                        optionalMono(tClientRepository.findById(clientId))))
+                                .flatMap(zip -> {
                                     Optional<TClient> tClient = zip.getT2();
-                                    tClient.isPresent() ? tClientRepository.save(
-                                            tClient.get().setSurName(zip.getT1().getSurName())
-                                                    .setFirstName(zip.getT1().getFirstName()))
-                                            .map(ClientResponseMapper::toDto)
-                                            : Mono.error(new RuntimeException("Клиент с id = " + clientId + " не найден"))
-                                }),
+                                    if (tClient.isEmpty()) {
+                                        return Mono.error(
+                                                new RuntimeException("Клиент с id = " + clientId + " не найден"));
+                                    }
+
+                                    return tClientRepository.save(fromChangeClientDto(tClient.get(), zip.getT1()));
+                                })
+                                .map(ClientResponseMapper::toDto),
                         ClientResponse.class));
     }
 
+    public Mono<ServerResponse> addContactToClient(ServerRequest request) {
+        Long clientId = Long.valueOf(request.pathVariable("clientId"));
+        return ok().contentType(APPLICATION_JSON)
+                .body(fromPublisher(addContactValidationHandler.validate(request.bodyToMono(AddContact.class),
+                                AddContact.class)
+                        .flatMap(req -> Mono.zip(Mono.just(req), optionalMono(tClientRepository.findById(clientId))))
+                        .flatMap(zip -> {
+                            if (zip.getT2().isEmpty()) {
+                                return Mono.error(
+                                        new RuntimeException("Клиент с id = " + clientId + " не найден"));
+                            }
+
+                            return tContactRepository.save(fromAddContactDto(zip.getT1(), clientId));
+                        })
+                        .map(TContact::getId), Long.class));
+    }
+
     public Mono<ServerResponse> deleteClient(ServerRequest request) {
-        return null;
+        Long clientId = Long.valueOf(request.pathVariable("clientId"));
+        return ok().build(optionalMono(tClientRepository.findById(clientId))
+                .flatMap(tClient -> {
+                    if (tClient.isEmpty()) {
+                        return Mono.error(
+                                new RuntimeException("Клиент с id = " + clientId + " не найден"));
+                    }
+
+                    return Mono.just(tClient);
+                }).then(tContactRepository.deleteAllByClientId(clientId))
+                .then(tClientRepository.deleteById(clientId)));
     }
 
     public Mono<ServerResponse> deleteClientContact(ServerRequest request) {
-        return null;
+        Long clientId = Long.valueOf(request.pathVariable("clientId"));
+        Long contactId = Long.valueOf(request.pathVariable("contactId"));
+        return ok().build(optionalMono(tContactRepository.findByClientId(clientId).collectList())
+                .flatMap(tContacts -> {
+                    if (tContacts.isEmpty()) {
+                        return Mono.error(
+                                new RuntimeException("У Клиента с id = " + clientId + " нет контактов"));
+                    }
+                    TContact tContact =
+                            tContacts.get().stream()
+                                    .filter(f -> contactId.equals(f.getId()))
+                                    .findAny()
+                                    .orElse(null);
+                    if (tContact == null) {
+                        return Mono.error(
+                                new RuntimeException(
+                                        "Контакт с id = " + contactId + " не принадлежит Клиенту с id = " + clientId));
+                    }
+
+                    return tContactRepository.delete(tContact);
+                }));
     }
 
 }

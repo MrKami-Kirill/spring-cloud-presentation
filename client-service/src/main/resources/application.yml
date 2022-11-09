@@ -3,7 +3,7 @@ server:
 
 logging:
   level:
-    ROOT: ERROR
+    ROOT: INFO
 
 #actuator
 management:
@@ -60,9 +60,13 @@ api:
   path:
     additional: /client-service
     clients: /clients
-    client-by-id: /clients/<clientId>
-    client-contacts: /clients/<clientId>/contacts
+    client-by-id: /clients/{clientId}
+    client-contacts: /clients/{clientId}/contacts
     add-client: /clients
-    change-client: /clients/<clientId>
-    delete-client: /clients/<clientId>
-    delete-client-contact: /clients/<clientId>/contacts/<contactId>
+    change-client: /clients/{clientId}
+    add-contact-to-client: /clients/{clientId}/contacts
+    delete-client: /clients/{clientId}
+    delete-client-contact: /clients/{clientId}/contacts/{contactId}
+
+encrypt:
+  key: mySecretKey

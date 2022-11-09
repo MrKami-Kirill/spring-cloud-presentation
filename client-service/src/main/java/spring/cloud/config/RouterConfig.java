@@ -31,6 +31,8 @@ public class RouterConfig {
                                 routerHandler::getClientContacts)
                         .andRoute(POST(clientServiceProperty.getAddClientPath()), routerHandler::addClient)
                         .andRoute(PUT(clientServiceProperty.getChangeClientPath()), routerHandler::changeClient)
+                        .andRoute(POST(clientServiceProperty.getAddContactToClientPath()),
+                                routerHandler::addContactToClient)
                         .andRoute(DELETE(clientServiceProperty.getDeleteClientPath()), routerHandler::deleteClient)
                         .andRoute(DELETE(clientServiceProperty.getDeleteClientContactPath()),
                                 routerHandler::deleteClientContact)));

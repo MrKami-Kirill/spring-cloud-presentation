@@ -75,15 +75,15 @@
                 <version>${liquibase.version}</version>
                 <configuration>
                     <!--suppress UnresolvedMavenProperty -->
-                    <url>${postgres.url}</url>
+                    <url>jdbc:postgresql://localhost:5432/db_client_data</url>
                     <!--suppress UnresolvedMavenProperty -->
-                    <username>${postgres.username}</username>
+                    <username>spring_cloud_user</username>
                     <!--suppress UnresolvedMavenProperty -->
-                    <password>${postgres.password}</password>
+                    <password>r53x46MXEz<![CDATA[&]]>H</password>
                     <!--propertyFile>config/liquibase.properties</propertyFile-->
                     <changeLogFile>changelog/changelog.xml</changeLogFile>
                     <dataDir>changelog/db</dataDir>
-                    <defaultSchemaName>${postgres.schema.name}</defaultSchemaName>
+                    <defaultSchemaName>db_client_data</defaultSchemaName>
                     <outputDefaultSchema>true</outputDefaultSchema>
                     <!-- log  -->
                     <verbose>true</verbose>

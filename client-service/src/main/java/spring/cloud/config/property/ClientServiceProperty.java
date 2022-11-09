@@ -20,6 +20,8 @@ public class ClientServiceProperty {
     private String addClientPath;
     @Value("${api.path.change-client}")
     private String changeClientPath;
+    @Value("${api.path.add-contact-to-client}")
+    private String addContactToClientPath;
     @Value("${api.path.delete-client}")
     private String deleteClientPath;
     @Value("${api.path.delete-client-contact}")

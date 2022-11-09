@@ -3,7 +3,7 @@ server:
 
 logging:
   level:
-    ROOT: ERROR
+    ROOT: INFO
 
 #actuator
 management:
@@ -18,6 +18,8 @@ management:
 spring:
   application:
     name: proxy-module
+  banner:
+    location: banner
   config:
     import: optional:configserver:http://localhost:8888
   sleuth:
