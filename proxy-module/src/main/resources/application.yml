@@ -15,7 +15,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,env,prometheus
+        include: health,env,prometheus,info
 
 spring:
   application:
