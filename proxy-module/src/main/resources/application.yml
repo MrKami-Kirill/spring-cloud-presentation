@@ -4,6 +4,8 @@ server:
 logging:
   level:
     ROOT: INFO
+    #feign logging
+    spring.cloud.feign.ClientServiceProxy: INFO
 
 #actuator
 management:
@@ -22,11 +24,14 @@ spring:
     location: banner
   config:
     import: optional:configserver:http://localhost:8888
+  main:
+    allow-bean-definition-overriding: true
+    web-application-type: reactive
   sleuth:
     sampler:
       probability: 100
   zipkin:
-    base-url: http://localhost:9411
+    base-url: http://localhost:9411/
 
 eureka:
   client:
@@ -40,3 +45,31 @@ eureka:
     lease-expiration-duration-in-seconds: 90
     instance-id: ${spring.application.name}:${server.port}
     prefer-ip-address: true
+
+
+api:
+  path:
+    additional: /proxy-module
+    clients: /getClients
+    client-by-id: /getClientById/{clientId}
+    client-contacts: /getClientContacts/{clientId}
+    add-client: /addClient
+    change-client: /changeClient/{clientId}
+    add-contact-to-client: /addContactToClient/{clientId}
+    delete-client: /deleteClient/{clientId}
+    delete-client-contact: /deleteClientContact/{clientId}/{contactId}
+
+encrypt:
+  key: mySecretKey
+
+#feign
+reactive:
+  feign:
+    client:
+      config:
+        client-service:
+          options:
+            readTimeoutMillis: 2000
+            writeTimeoutMillis: 2000
+            responseTimeoutMillis: 2000
+

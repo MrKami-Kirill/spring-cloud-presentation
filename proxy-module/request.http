@@ -1,0 +1,6 @@
+GET http://localhost:8890/proxy-module/getClients
+Content-Type: application/json
+
+###
+GET http://localhost:8890/proxy-module/getClientById/2
+Content-Type: application/json
