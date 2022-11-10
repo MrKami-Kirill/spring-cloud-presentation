@@ -48,6 +48,16 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-bus-kafka</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.kafka</groupId>
+          <artifactId>kafka-clients</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-zipkin</artifactId>
       <version>${spring-cloud-starter-zipkin.version}</version>
     </dependency>
@@ -106,6 +116,17 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <executable>true</executable>
+          <finalName>${artifactId}</finalName>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>build-info</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

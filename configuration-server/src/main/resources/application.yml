@@ -24,17 +24,34 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/MrKami-Kirill/config-repo
+          uri: ${GIT_URI:https://github.com/MrKami-Kirill/config-repo}
           default-label: master
           clone-on-start: true
           search-paths: '{application}'
         encrypt:
           enabled: true
         default-profile: default
+      bus:
+        enabled: true
+      kafka:
+        bootstrap-servers: ${KAFKA_ADDR:http://localhost:9092}
   security:
     user:
       name: root
       password: root
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8889/eureka}
+      register-with-eureka: true
+      fetch-registry: true
+      eviction-interval-timer-in-ms: 15000
+  instance:
+    lease-renewal-interval-in-seconds: 30
+    lease-expiration-duration-in-seconds: 90
+    instance-id: ${spring.application.name}:${server.port}
+    prefer-ip-address: true
 
 encrypt:
   key: mySecretKey

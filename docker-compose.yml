@@ -1,0 +1,102 @@
+version: '3'
+
+networks:
+  kafka-net:
+    driver: bridge
+
+services:
+  zipkin-server:
+    container_name: zipkin-server
+    build:
+      context: .
+      dockerfile: /zipkin/Dockerfile
+    ports:
+      - '9411:9411'
+    restart: always
+    network_mode: host
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  configuration-server:
+    container_name: configuration-server
+    build:
+      context: .
+      dockerfile: /configuration-server/Dockerfile
+    ports:
+      - '8888:8888'
+    environment:
+      - GIT_URI=https://github.com/MrKami-Kirill/config-repo
+      - EUREKA_URI=http://eureka-discovery-server:8889
+      - KAFKA_ADDR=http://kafka-server:9092
+    restart: always
+    network_mode: host
+
+
+  eureka-discovery-server:
+    container_name: eureka-discovery-server
+    build:
+      context: .
+      dockerfile: /eureka-discovery-server/Dockerfile
+    ports:
+      - '8889:8889'
+    environment:
+      - ZIPKIN_URI=http://zipkin-server:9411
+      - EUREKA_URI=http://eureka-discovery-server:8889
+    restart: always
+    network_mode: host
+
+  proxy-module:
+    container_name: proxy-module
+    build:
+      context: .
+      dockerfile: /proxy-module/Dockerfile
+    ports:
+      - '8890:8890'
+    environment:
+      - CONFIG_URI=http://configuration-server:8888
+      - ZIPKIN_URI=http://zipkin-server:9411
+      - EUREKA_URI=http://eureka-discovery-server:8889
+      - KAFKA_ADDR=http://kafka-server:9092
+    restart: always
+    network_mode: host
+
+  client-service:
+    container_name: client-service
+    build:
+      context: .
+      dockerfile: /client-service/Dockerfile
+    ports:
+      - '8891:8891'
+    environment:
+      - CONFIG_URI=http://configuration-server:8888
+      - ZIPKIN_URI=http://zipkin-server:9411
+      - EUREKA_URI=http://eureka-discovery-server:8889
+      - KAFKA_ADDR=http://kafka-server:9092
+    restart: always
+    network_mode: host
+
+  zookeeper-server:
+    image: bitnami/zookeeper:latest
+    container_name: zookeeper
+    networks:
+      - kafka-net
+    ports:
+      - '2181:2181'
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+
+  kafka-server:
+    image: bitnami/kafka:latest
+    container_name: kafka-server
+    networks:
+      - kafka-net
+    ports:
+      - '9092:9092'
+    volumes:
+      - ~/.docker-conf/kafka/local/:/usr/local/
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper-server:2181
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-server:9092
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    depends_on:
+      - zookeeper-server

@@ -21,12 +21,12 @@ spring:
   banner:
     location: banner
   zipkin:
-    base-url: http://localhost:9411/
+    base-url: ${ZIPKIN_URI:http://localhost:9411/}
 
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8889/eureka
+      defaultZone: ${EUREKA_URI:http://localhost:8889/eureka}
     register-with-eureka: false
     fetch-registry: false
   server:
