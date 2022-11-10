@@ -1,3 +1,7 @@
+###
+POST http://localhost:8081/actuator/busrefresh
+
+###
 GET http://localhost:8081/proxy-module/getClients
 Content-Type: application/json
 

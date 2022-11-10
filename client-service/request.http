@@ -1,3 +1,7 @@
+###
+POST http://localhost:8082/actuator/busrefresh
+
+###
 GET http://localhost:8082/client-service/clients
 Content-Type: application/json
 

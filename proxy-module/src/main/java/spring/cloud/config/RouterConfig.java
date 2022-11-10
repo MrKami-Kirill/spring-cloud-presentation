@@ -7,6 +7,7 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RouterFunctions.nest;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -15,6 +16,7 @@ import spring.cloud.config.property.ProxyModuleProperty;
 import spring.cloud.handler.RouterHandler;
 
 @Configuration
+@RefreshScope
 public class RouterConfig {
 
     @Bean
