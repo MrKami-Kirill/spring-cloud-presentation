@@ -11,6 +11,8 @@ import static spring.cloud.util.MonoHelper.optionalMonoFromFlux;
 
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -29,9 +31,14 @@ import spring.cloud.model.mapper.ClientsResponseMapper;
 import spring.cloud.repository.TClientRepository;
 import spring.cloud.repository.TContactRepository;
 
+@RefreshScope
 @Component
 @RequiredArgsConstructor
 public class RouterHandler {
+
+    //Для тестирования Spring Cloud Bus
+    @Value("${text.test-message-log}")
+    private String message;
 
     private final TClientRepository tClientRepository;
     private final TContactRepository tContactRepository;
