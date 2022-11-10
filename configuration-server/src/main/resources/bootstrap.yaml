@@ -1,5 +1,5 @@
 server:
-  port: 8888
+  port: 8080
 
 logging:
   level:
@@ -13,7 +13,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,env,prometheus,info
+        include: '*'
 
 spring:
   application:
@@ -31,10 +31,10 @@ spring:
         encrypt:
           enabled: true
         default-profile: default
-      bus:
-        enabled: true
-      kafka:
-        bootstrap-servers: ${KAFKA_ADDR:http://localhost:9092}
+    bus:
+      enabled: true
+  kafka:
+    bootstrap-servers: ${KAFKA_ADDR:http://kafka-server:9092}
   security:
     user:
       name: root
@@ -43,7 +43,7 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_URI:http://localhost:8889/eureka}
+      defaultZone: ${EUREKA_URI:http://eureka-discovery-server:8761/eureka}
       register-with-eureka: true
       fetch-registry: true
       eviction-interval-timer-in-ms: 15000

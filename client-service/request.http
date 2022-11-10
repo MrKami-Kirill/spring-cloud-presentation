@@ -1,16 +1,16 @@
-GET http://localhost:8891/client-service/clients
+GET http://localhost:8082/client-service/clients
 Content-Type: application/json
 
 ###
-GET http://localhost:8891/client-service/clients/2
+GET http://localhost:8082/client-service/clients/2
 Content-Type: application/json
 
 ###
-GET http://localhost:8891/client-service/clients/2/contacts
+GET http://localhost:8082/client-service/clients/2/contacts
 Content-Type: application/json
 
 ###
-POST http://localhost:8891/client-service/clients
+POST http://localhost:8082/client-service/clients
 Content-Type: application/json
 
 {
@@ -21,7 +21,7 @@ Content-Type: application/json
 }
 
 ###
-PUT http://localhost:8891/client-service/clients/2
+PUT http://localhost:8082/client-service/clients/2
 Content-Type: application/json
 
 {
@@ -32,7 +32,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:8891/client-service/clients/2/contacts
+POST http://localhost:8082/client-service/clients/2/contacts
 Content-Type: application/json
 
 {
@@ -41,9 +41,9 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:8891/client-service/clients/4/
+DELETE http://localhost:8082/client-service/clients/4/
 Content-Type: application/json
 
 ###
-DELETE http://localhost:8891/client-service/clients/2/contacts/2
+DELETE http://localhost:8082/client-service/clients/2/contacts/2
 Content-Type: application/json
