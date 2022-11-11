@@ -1,0 +1,60 @@
+server:
+  port: 8076
+
+logging:
+  level:
+    ROOT: INFO
+
+#actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+    metrics:
+      enabled: true
+    logfile:
+      enabled: true
+    prometheus:
+      enabled: true
+  info:
+    build:
+      enabled: true
+    env:
+      enabled: true
+    git:
+      mode: "full"
+
+hystrix:
+  dashboard:
+    proxy-stream-allow-list: "*"
+
+spring:
+  application:
+    name: hystrix-dashboard
+  banner:
+    location: banner
+  zipkin:
+    base-url: ${ZIPKIN_URI:http://zipkin-server:9411/}
+
+turbine:
+  app-config: proxy-module,client-service
+  aggregator:
+    cluster-config: proxy-module,client-service
+  cluster-name-expression: 'new String("default")'
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://eureka-discovery-server:8761/eureka}
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    lease-renewal-interval-in-seconds: 30
+    lease-expiration-duration-in-seconds: 90
+    instance-id: ${spring.application.name}:${server.port}
+    prefer-ip-address: true

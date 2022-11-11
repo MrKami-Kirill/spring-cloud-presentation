@@ -46,6 +46,21 @@ services:
     depends_on:
       - eureka-discovery-server
 
+  hystrix-dashboard:
+    container_name: 'hystrix-dashboard'
+    networks:
+      - spring-cloud-net
+    build:
+      context: .
+      dockerfile: /hystrix-dashboard/Dockerfile
+    ports:
+      - '8076:8076'
+    environment:
+      ZIPKIN_URI: http://zipkin-server:9411
+      #      EUREKA_URI: http://eureka-discovery-server:8761
+    depends_on:
+      - eureka-discovery-server
+
   proxy-module:
     container_name: 'proxy-module'
     networks:
@@ -62,6 +77,7 @@ services:
       KAFKA_ADDR: http://kafka-server:9092
     restart: always
     depends_on:
+      - hystrix-dashboard
       - configuration-server
       - client-service
 
@@ -80,6 +96,7 @@ services:
 #      EUREKA_URI: http://eureka-discovery-server:8761
       KAFKA_ADDR: http://kafka-server:9092
     depends_on:
+      - hystrix-dashboard
       - configuration-server
       - pg-server
 

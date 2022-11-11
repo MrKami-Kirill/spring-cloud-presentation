@@ -17,6 +17,7 @@
   <properties>
     <java.version>17</java.version>
     <spring-cloud.version>2021.0.5</spring-cloud.version>
+    <hystrix.version>2.2.10.RELEASE</hystrix.version>
     <spring-cloud-starter-zipkin.version>2.2.8.RELEASE</spring-cloud-starter-zipkin.version>
     <feign-reactor-spring-cloud-starter.version>3.2.6</feign-reactor-spring-cloud-starter.version>
     <micrometer-registry-prometheus.version>1.10.0</micrometer-registry-prometheus.version>
@@ -58,6 +59,11 @@
           <artifactId>kafka-clients</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+      <version>${hystrix.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.cloud</groupId>

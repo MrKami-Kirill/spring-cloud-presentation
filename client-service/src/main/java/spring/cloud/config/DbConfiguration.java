@@ -1,6 +1,5 @@
 package spring.cloud.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.r2dbc.pool.ConnectionPool;
 import io.r2dbc.pool.ConnectionPoolConfiguration;
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration;

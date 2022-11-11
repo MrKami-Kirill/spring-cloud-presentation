@@ -8,6 +8,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public record AddClient(@NotBlank String surName, @NotBlank String firstName, String middleName,
-                        @NotNull @JsonFormat(pattern = BIRTHDAY_DATE_FORMAT, shape = JsonFormat.Shape.STRING) LocalDate birthDay) {
+                        @NotNull @JsonFormat(pattern = BIRTHDAY_DATE_FORMAT, shape = JsonFormat.Shape.STRING)
+                        LocalDate birthDay) {
 
 }

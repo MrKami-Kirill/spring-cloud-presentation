@@ -9,6 +9,7 @@ import static spring.cloud.model.entity.mapper.TContactMapper.fromAddContactDto;
 import static spring.cloud.util.MonoHelper.optionalMono;
 import static spring.cloud.util.MonoHelper.optionalMonoFromFlux;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,18 +46,21 @@ public class RouterHandler {
     private final ValidationHandler<AddClient> addClientValidationHandler;
     private final ValidationHandler<AddContact> addContactValidationHandler;
 
+    @HystrixCommand
     public Mono<ServerResponse> getClients(ServerRequest request) {
         return ok().contentType(APPLICATION_JSON)
                 .body(fromPublisher(tClientRepository.findAll().collectList()
                         .map(ClientsResponseMapper::toDto), ClientsResponse.class));
     }
 
+    @HystrixCommand
     public Mono<ServerResponse> getClientById(ServerRequest request) {
         return ok().contentType(APPLICATION_JSON)
                 .body(fromPublisher(tClientRepository.findById(Long.valueOf(request.pathVariable("clientId")))
                         .map(ClientResponseMapper::toDto), ClientResponse.class));
     }
 
+    @HystrixCommand
     public Mono<ServerResponse> getClientContacts(ServerRequest request) {
         return ok().contentType(APPLICATION_JSON)
                 .body(fromPublisher(optionalMonoFromFlux(
@@ -66,6 +70,7 @@ public class RouterHandler {
                         ClientContactsResponse.class));
     }
 
+    @HystrixCommand
     public Mono<ServerResponse> addClient(ServerRequest request) {
         return ok().contentType(APPLICATION_JSON)
                 .body(fromPublisher(addClientValidationHandler.validate(request.bodyToMono(AddClient.class),
@@ -74,6 +79,7 @@ public class RouterHandler {
                         .map(TClient::getId), Long.class));
     }
 
+    @HystrixCommand
     public Mono<ServerResponse> changeClient(ServerRequest request) {
         Long clientId = Long.valueOf(request.pathVariable("clientId"));
         return ok().contentType(APPLICATION_JSON)
@@ -93,6 +99,7 @@ public class RouterHandler {
                         ClientResponse.class));
     }
 
+    @HystrixCommand
     public Mono<ServerResponse> addContactToClient(ServerRequest request) {
         Long clientId = Long.valueOf(request.pathVariable("clientId"));
         return ok().contentType(APPLICATION_JSON)
@@ -110,6 +117,7 @@ public class RouterHandler {
                         .map(TContact::getId), Long.class));
     }
 
+    @HystrixCommand
     public Mono<ServerResponse> deleteClient(ServerRequest request) {
         Long clientId = Long.valueOf(request.pathVariable("clientId"));
         return ok().build(optionalMono(tClientRepository.findById(clientId))
@@ -124,6 +132,7 @@ public class RouterHandler {
                 .then(tClientRepository.deleteById(clientId)));
     }
 
+    @HystrixCommand
     public Mono<ServerResponse> deleteClientContact(ServerRequest request) {
         Long clientId = Long.valueOf(request.pathVariable("clientId"));
         Long contactId = Long.valueOf(request.pathVariable("contactId"));

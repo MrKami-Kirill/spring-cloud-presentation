@@ -23,6 +23,9 @@ management:
       enabled: true
     busrefresh:
       enabled: true
+    hystrix:
+      stream:
+        enabled: true
   info:
     build:
       enabled: true
@@ -30,6 +33,14 @@ management:
       enabled: true
     git:
       mode: "full"
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 3000
 
 spring:
   application:
