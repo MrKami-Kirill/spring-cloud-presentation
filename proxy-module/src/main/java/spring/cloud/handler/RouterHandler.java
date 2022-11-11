@@ -4,6 +4,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -23,29 +24,34 @@ public class RouterHandler {
 
     private final ClientServiceProxy clientServiceProxy;
 
+    @HystrixCommand
     public Mono<ServerResponse> getClients(ServerRequest request) {
         return ok().contentType(APPLICATION_JSON)
                 .body(fromPublisher(clientServiceProxy.getClients(), ClientsResponse.class));
     }
 
+    @HystrixCommand
     public Mono<ServerResponse> getClientById(ServerRequest request) {
         return ok().contentType(APPLICATION_JSON)
                 .body(fromPublisher(clientServiceProxy.getClientById(request.pathVariable("clientId")),
                         ClientResponse.class));
     }
 
+    @HystrixCommand
     public Mono<ServerResponse> getClientContacts(ServerRequest request) {
         return ok().contentType(APPLICATION_JSON)
                 .body(fromPublisher(clientServiceProxy.getClientContacts(request.pathVariable("clientId")),
                         ClientContactsResponse.class));
     }
 
+    @HystrixCommand
     public Mono<ServerResponse> addClient(ServerRequest request) {
         return ok().contentType(APPLICATION_JSON)
                 .body(fromPublisher(clientServiceProxy.addClient(request.bodyToMono(AddClient.class)),
                         Long.class));
     }
 
+    @HystrixCommand
     public Mono<ServerResponse> changeClient(ServerRequest request) {
         return ok().contentType(APPLICATION_JSON)
                 .body(fromPublisher(clientServiceProxy.changeClient(request.pathVariable("clientId"),
@@ -53,6 +59,7 @@ public class RouterHandler {
                         ClientResponse.class));
     }
 
+    @HystrixCommand
     public Mono<ServerResponse> addContactToClient(ServerRequest request) {
         return ok().contentType(APPLICATION_JSON)
                 .body(fromPublisher(clientServiceProxy.addContactToClient(request.pathVariable("clientId"),
@@ -60,10 +67,12 @@ public class RouterHandler {
                         Long.class));
     }
 
+    @HystrixCommand
     public Mono<ServerResponse> deleteClient(ServerRequest request) {
         return ok().build(clientServiceProxy.deleteClient(request.pathVariable("clientId")));
     }
 
+    @HystrixCommand
     public Mono<ServerResponse> deleteClientContact(ServerRequest request) {
         return ok().build(clientServiceProxy.deleteClientContact(request.pathVariable("clientId"),
                 request.pathVariable("contactId")));

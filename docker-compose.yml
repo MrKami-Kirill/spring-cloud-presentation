@@ -15,20 +15,56 @@ services:
     ports:
       - '9411:9411'
 
-  eureka-discovery-server:
-    container_name: 'eureka-discovery-server'
+  eureka-discovery-server-peer-1:
+    container_name: 'eureka-discovery-server-peer-1'
+    hostname: 'eureka-discovery-server-peer-1'
     networks:
       - spring-cloud-net
     build:
       context: .
-      dockerfile: /eureka-discovery-server/Dockerfile
+      dockerfile: /eureka-discovery-server/docker/peer-1/Dockerfile
     ports:
       - '8761:8761'
     environment:
-      ZIPKIN_URI: http://zipkin-server:9411
-#      EUREKA_URI: http://eureka-discovery-server:8761
+      SPRING_PROFILES_ACTIVE: peer-1
+      SPRING_ZIPKIN_BASE_URL: http://zipkin-server:9411
+      EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE: http://eureka-discovery-server-peer-2:8762/eureka/,http://eureka-discovery-server-peer-3:8763/eureka/
     depends_on:
-      - kafka-server
+      - zipkin-server
+
+  eureka-discovery-server-peer-2:
+    container_name: 'eureka-discovery-server-peer-2'
+    hostname: 'eureka-discovery-server-peer-2'
+    networks:
+      - spring-cloud-net
+    build:
+      context: .
+      dockerfile: /eureka-discovery-server/docker/peer-2/Dockerfile
+    ports:
+      - '8762:8762'
+    environment:
+      SPRING_PROFILES_ACTIVE: peer-2
+      SPRING_ZIPKIN_BASE_URL: http://zipkin-server:9411
+      EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE: http://eureka-discovery-server-peer-1:8761/eureka/,http://eureka-discovery-server-peer-3:8763/eureka/
+    depends_on:
+      - zipkin-server
+
+  eureka-discovery-server-peer-3:
+    container_name: 'eureka-discovery-server-peer-3'
+    hostname: 'eureka-discovery-server-peer-3'
+    networks:
+      - spring-cloud-net
+    build:
+      context: .
+      dockerfile: /eureka-discovery-server/docker/peer-3/Dockerfile
+    ports:
+      - '8763:8763'
+    environment:
+      SPRING_PROFILES_ACTIVE: peer-3
+      SPRING_ZIPKIN_BASE_URL: http://zipkin-server:9411
+      EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE: http://eureka-discovery-server-peer-1:8761/eureka/,http://eureka-discovery-server-peer-2:8762/eureka/
+    depends_on:
+      - zipkin-server
 
   configuration-server:
     container_name: 'configuration-server'
@@ -40,11 +76,14 @@ services:
     ports:
       - '8080:8080'
     environment:
-      GIT_URI: https://github.com/MrKami-Kirill/config-repo
-#      - EUREKA_URI=http://eureka-discovery-server:8761
-      KAFKA_ADDR: http://kafka-server:9092
+      SPRING_CLOUD_CONFIG_SERVER_GIT_URI: https://github.com/MrKami-Kirill/config-repo
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: http://kafka-server:9092
+      EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE: http://eureka-discovery-server-peer-1:8761/eureka/,http://eureka-discovery-server-peer-2:8762/eureka/,http://eureka-discovery-server-peer-3:8763/eureka/
     depends_on:
-      - eureka-discovery-server
+      - eureka-discovery-server-peer-1
+      - eureka-discovery-server-peer-2
+      - eureka-discovery-server-peer-3
+      - kafka-server
 
   hystrix-dashboard:
     container_name: 'hystrix-dashboard'
@@ -56,10 +95,13 @@ services:
     ports:
       - '8076:8076'
     environment:
-      ZIPKIN_URI: http://zipkin-server:9411
-      #      EUREKA_URI: http://eureka-discovery-server:8761
+      SPRING_ZIPKIN_BASE_URL: http://zipkin-server:9411
+      EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE: http://eureka-discovery-server-peer-1:8761/eureka/,http://eureka-discovery-server-peer-2:8762/eureka/,http://eureka-discovery-server-peer-3:8763/eureka/
     depends_on:
-      - eureka-discovery-server
+      - eureka-discovery-server-peer-1
+      - eureka-discovery-server-peer-2
+      - eureka-discovery-server-peer-3
+      - zipkin-server
 
   proxy-module:
     container_name: 'proxy-module'
@@ -71,15 +113,20 @@ services:
     ports:
       - '8081:8081'
     environment:
-      CONFIG_URI: http://configuration-server:8080
-      ZIPKIN_URI: http://zipkin-server:9411
-#      EUREKA_URI: http://eureka-discovery-server:8761
-      KAFKA_ADDR: http://kafka-server:9092
-    restart: always
+#      SPRING_CLOUD_CONFIG_URI: http://configuration-server:8080
+#      SPRING_CONFIG_IMPORT: optional:configserver:http://configuration-server:8080
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: http://kafka-server:9092
+      SPRING_ZIPKIN_BASE_URL: http://zipkin-server:9411
+      EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE: http://eureka-discovery-server-peer-1:8761/eureka/,http://eureka-discovery-server-peer-2:8762/eureka/,http://eureka-discovery-server-peer-3:8763/eureka/
     depends_on:
+      - eureka-discovery-server-peer-1
+      - eureka-discovery-server-peer-2
+      - eureka-discovery-server-peer-3
       - hystrix-dashboard
       - configuration-server
       - client-service
+      - kafka-server
+      - zipkin-server
 
   client-service:
     container_name: 'client-service'
@@ -91,14 +138,20 @@ services:
     ports:
       - '8082:8082'
     environment:
-      CONFIG_URI: http://configuration-server:8080
-      ZIPKIN_URI: http://zipkin-server:9411
-#      EUREKA_URI: http://eureka-discovery-server:8761
-      KAFKA_ADDR: http://kafka-server:9092
+#      SPRING_CLOUD_CONFIG_URI: http://configuration-server:8080
+#      SPRING_CONFIG_IMPORT: optional:configserver:http://configuration-server:8080
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: http://kafka-server:9092
+      SPRING_ZIPKIN_BASE_URL: http://zipkin-server:9411
+      EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE: http://eureka-discovery-server-peer-1:8761/eureka/,http://eureka-discovery-server-peer-2:8762/eureka/,http://eureka-discovery-server-peer-3:8763/eureka/
     depends_on:
+      - eureka-discovery-server-peer-1
+      - eureka-discovery-server-peer-2
+      - eureka-discovery-server-peer-3
       - hystrix-dashboard
       - configuration-server
       - pg-server
+      - kafka-server
+      - zipkin-server
 
   zookeeper-server:
     image: bitnami/zookeeper:latest
@@ -126,7 +179,6 @@ services:
       ALLOW_PLAINTEXT_LISTENER: yes
     depends_on:
       - zookeeper-server
-      - zipkin-server
 
   pg-server:
     image: postgres:latest
@@ -139,8 +191,6 @@ services:
       POSTGRES_DB: db_client_data
     ports:
       - '5432:5432'
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
       - ./pg-server/init_db_client_data.sql:/docker-entrypoint-initdb.d/init_db_client_data.sql

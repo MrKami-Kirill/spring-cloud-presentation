@@ -32,19 +32,126 @@ management:
 spring:
   application:
     name: eureka-discovery-server
+  config:
+    activate:
+      on-profile: peer-1
   banner:
     location: banner
   zipkin:
-    base-url: ${ZIPKIN_URI:http://zipkin-server:9411/}
+    base-url: http://localhost:9411
 
 eureka:
+  instance:
+    hostname: peer-1-server.com
   client:
     service-url:
-      defaultZone: ${EUREKA_URI:http://eureka-discovery-server:8761/eureka}
-    register-with-eureka: false
-    fetch-registry: false
-  server:
-    wait-time-in-ms-when-sync-empty: 5
-    registry-sync-retries: 3
-    max-threads-for-peer-replication: 0
-    enable-self-preservation: false
+      defaultZone: http://localhost:8762/eureka/,http://localhost:8763/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+    eviction-interval-timer-in-ms: 15000
+
+---
+server:
+  port: 8762
+
+logging:
+  level:
+    ROOT: INFO
+
+#actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+    metrics:
+      enabled: true
+    logfile:
+      enabled: true
+    prometheus:
+      enabled: true
+  info:
+    build:
+      enabled: true
+    env:
+      enabled: true
+    git:
+      mode: "full"
+
+spring:
+  application:
+    name: eureka-discovery-server
+  config:
+    activate:
+      on-profile: peer-2
+  banner:
+    location: banner
+  zipkin:
+    base-url: http://localhost:9411
+
+eureka:
+  instance:
+    hostname: peer-2-server.com
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/,http://localhost:8763/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+    eviction-interval-timer-in-ms: 15000
+
+---
+server:
+  port: 8763
+
+logging:
+  level:
+    ROOT: INFO
+
+#actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+    metrics:
+      enabled: true
+    logfile:
+      enabled: true
+    prometheus:
+      enabled: true
+  info:
+    build:
+      enabled: true
+    env:
+      enabled: true
+    git:
+      mode: "full"
+
+spring:
+  application:
+    name: eureka-discovery-server
+  config:
+    activate:
+      on-profile: peer-3
+  banner:
+    location: banner
+  zipkin:
+    base-url: http://localhost:9411
+
+eureka:
+  instance:
+    hostname: peer-3-server.com
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/,http://localhost:8762/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+    eviction-interval-timer-in-ms: 15000
