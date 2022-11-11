@@ -8,10 +8,10 @@ import reactivefeign.spring.config.EnableReactiveFeignClients;
 @SpringBootApplication
 @EnableEurekaClient
 @EnableReactiveFeignClients
-public class ProxyModuleApplication {
+public class Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(ProxyModuleApplication.class, args);
+        SpringApplication.run(Application.class, args);
     }
 
 }

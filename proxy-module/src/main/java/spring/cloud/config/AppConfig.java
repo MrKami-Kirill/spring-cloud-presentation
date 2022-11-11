@@ -1,6 +1,5 @@
 package spring.cloud.config;
 
-
 import static spring.cloud.util.Constants.BIRTHDAY_DATE_FORMAT;
 import static spring.cloud.util.Constants.ISO_DATE_FORMAT;
 

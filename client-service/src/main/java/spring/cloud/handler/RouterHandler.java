@@ -81,13 +81,13 @@ public class RouterHandler {
                                 .flatMap(req -> Mono.zip(Mono.just(req),
                                         optionalMono(tClientRepository.findById(clientId))))
                                 .flatMap(zip -> {
-                                    Optional<TClient> tClient = zip.getT2();
-                                    if (tClient.isEmpty()) {
+                                    Optional<TClient> client = zip.getT2();
+                                    if (client.isEmpty()) {
                                         return Mono.error(
                                                 new RuntimeException("Клиент с id = " + clientId + " не найден"));
                                     }
 
-                                    return tClientRepository.save(fromChangeClientDto(tClient.get(), zip.getT1()));
+                                    return tClientRepository.save(fromChangeClientDto(client.get(), zip.getT1()));
                                 })
                                 .map(ClientResponseMapper::toDto),
                         ClientResponse.class));
@@ -113,13 +113,13 @@ public class RouterHandler {
     public Mono<ServerResponse> deleteClient(ServerRequest request) {
         Long clientId = Long.valueOf(request.pathVariable("clientId"));
         return ok().build(optionalMono(tClientRepository.findById(clientId))
-                .flatMap(tClient -> {
-                    if (tClient.isEmpty()) {
+                .flatMap(client -> {
+                    if (client.isEmpty()) {
                         return Mono.error(
                                 new RuntimeException("Клиент с id = " + clientId + " не найден"));
                     }
 
-                    return Mono.just(tClient);
+                    return Mono.just(client);
                 }).then(tContactRepository.deleteAllByClientId(clientId))
                 .then(tClientRepository.deleteById(clientId)));
     }
@@ -128,23 +128,23 @@ public class RouterHandler {
         Long clientId = Long.valueOf(request.pathVariable("clientId"));
         Long contactId = Long.valueOf(request.pathVariable("contactId"));
         return ok().build(optionalMono(tContactRepository.findByClientId(clientId).collectList())
-                .flatMap(tContacts -> {
-                    if (tContacts.isEmpty()) {
+                .flatMap(contacts -> {
+                    if (contacts.isEmpty()) {
                         return Mono.error(
                                 new RuntimeException("У Клиента с id = " + clientId + " нет контактов"));
                     }
-                    TContact tContact =
-                            tContacts.get().stream()
+                    TContact contact =
+                            contacts.get().stream()
                                     .filter(f -> contactId.equals(f.getId()))
                                     .findAny()
                                     .orElse(null);
-                    if (tContact == null) {
+                    if (contact == null) {
                         return Mono.error(
                                 new RuntimeException(
                                         "Контакт с id = " + contactId + " не принадлежит Клиенту с id = " + clientId));
                     }
 
-                    return tContactRepository.delete(tContact);
+                    return tContactRepository.delete(contact);
                 }));
     }
 

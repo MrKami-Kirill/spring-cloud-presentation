@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import reactivefeign.spring.config.ReactiveFeignClient;
 import reactor.core.publisher.Mono;
 
-@ReactiveFeignClient(name="client-service")
+@ReactiveFeignClient(name = "client-service")
 public interface ClientServiceProxy {
 
     @RequestMapping(method = RequestMethod.GET, value = "/client-service/clients")

@@ -18,13 +18,23 @@ public class TClientMapper {
 
     public static TClient fromChangeClientDto(TClient tClient, ChangeClient changeClient) {
         String surName = changeClient.getSurName();
+        if (surName != null && !surName.isBlank()) {
+            tClient.setSurName(surName);
+        }
+
         String firstName = changeClient.getFirstName();
+        if (firstName != null && !firstName.isBlank()) {
+            tClient.setFirstName(firstName);
+        }
         String middleName = changeClient.getMiddleName();
+        if (middleName != null && !middleName.isBlank()) {
+            tClient.setMiddleName(middleName);
+        }
         LocalDate birthDate = changeClient.getBirthDay();
-        if (surName != null && !surName.isBlank()) tClient.setSurName(surName);
-        if (firstName != null && !firstName.isBlank()) tClient.setFirstName(firstName);
-        if (middleName != null && !middleName.isBlank()) tClient.setMiddleName(middleName);
-        if (birthDate != null) tClient.setBirthDay(birthDate);
+        if (birthDate != null) {
+            tClient.setBirthDay(birthDate);
+        }
+
         return tClient;
     }
 
