@@ -39,6 +39,8 @@ spring:
       server:
         git:
           uri: ${GIT_URI:https://github.com/MrKami-Kirill/config-repo}
+          username: mrkami19940@gmail.com
+          password: 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
           default-label: master
           clone-on-start: true
           search-paths: '{application}'
