@@ -1,4 +1,4 @@
-version: '3'
+version: '3.9'
 
 networks:
   spring-cloud-net:
@@ -25,8 +25,8 @@ services:
     ports:
       - '8761:8761'
     environment:
-      - ZIPKIN_URI=http://zipkin-server:9411
-#      - EUREKA_URI=http://eureka-discovery-server:8761
+      ZIPKIN_URI: http://zipkin-server:9411
+#      EUREKA_URI: http://eureka-discovery-server:8761
     depends_on:
       - kafka-server
 
@@ -40,9 +40,9 @@ services:
     ports:
       - '8080:8080'
     environment:
-      - GIT_URI=https://github.com/MrKami-Kirill/config-repo
+      GIT_URI: https://github.com/MrKami-Kirill/config-repo
 #      - EUREKA_URI=http://eureka-discovery-server:8761
-      - KAFKA_ADDR=http://kafka-server:9092
+      KAFKA_ADDR: http://kafka-server:9092
     depends_on:
       - eureka-discovery-server
 
@@ -56,10 +56,10 @@ services:
     ports:
       - '8081:8081'
     environment:
-      - CONFIG_URI=http://configuration-server:8080
-      - ZIPKIN_URI=http://zipkin-server:9411
-#      - EUREKA_URI=http://eureka-discovery-server:8761
-      - KAFKA_ADDR=http://kafka-server:9092
+      CONFIG_URI: http://configuration-server:8080
+      ZIPKIN_URI: http://zipkin-server:9411
+#      EUREKA_URI: http://eureka-discovery-server:8761
+      KAFKA_ADDR: http://kafka-server:9092
     restart: always
     depends_on:
       - configuration-server
@@ -69,19 +69,19 @@ services:
     container_name: 'client-service'
     networks:
       - spring-cloud-net
-    hostname: 'client-service'
     build:
       context: .
       dockerfile: /client-service/Dockerfile
     ports:
       - '8082:8082'
     environment:
-      - CONFIG_URI=http://configuration-server:8080
-      - ZIPKIN_URI=http://zipkin-server:9411
-#      - EUREKA_URI=http://eureka-discovery-server:8761
-      - KAFKA_ADDR=http://kafka-server:9092
+      CONFIG_URI: http://configuration-server:8080
+      ZIPKIN_URI: http://zipkin-server:9411
+#      EUREKA_URI: http://eureka-discovery-server:8761
+      KAFKA_ADDR: http://kafka-server:9092
     depends_on:
       - configuration-server
+      - pg-server
 
   zookeeper-server:
     image: bitnami/zookeeper:latest
@@ -103,10 +103,27 @@ services:
     volumes:
       - ~/.docker-conf/kafka/local/:/usr/local/
     environment:
-      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
-      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper-server:2181
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-server:9092
-      - ALLOW_PLAINTEXT_LISTENER=yes
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
+      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper-server:2181
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka-server:9092
+      ALLOW_PLAINTEXT_LISTENER: yes
     depends_on:
       - zookeeper-server
       - zipkin-server
+
+  pg-server:
+    image: postgres:latest
+    container_name: pg-server
+    networks:
+      - spring-cloud-net
+    environment:
+      POSTGRES_USER: spring_cloud_user
+      POSTGRES_PASSWORD: r53x46MXEz&H
+      POSTGRES_DB: db_client_data
+    ports:
+      - '5432:5432'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+      - ./pg-server/init_db_client_data.sql:/docker-entrypoint-initdb.d/init_db_client_data.sql
