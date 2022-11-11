@@ -7,8 +7,8 @@ public class TContactMapper {
 
     public static TContact fromAddContactDto(AddContact addContact, Long clientId) {
         return TContact.builder()
-                .value(addContact.getValue())
-                .contactType(addContact.getType())
+                .value(addContact.value())
+                .contactType(addContact.type())
                 .clientId(clientId)
                 .build();
     }

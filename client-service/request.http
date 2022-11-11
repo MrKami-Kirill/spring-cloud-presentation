@@ -40,8 +40,8 @@ POST http://localhost:8082/client-service/clients/2/contacts
 Content-Type: application/json
 
 {
-  "value": "test@test.com",
-  "type": "EMAIL"
+  "value": "+79999999999",
+  "type": "MOBILE"
 }
 
 ###
