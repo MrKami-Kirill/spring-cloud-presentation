@@ -1,5 +1,6 @@
 package spring.cloud.feign;
 
+import org.springframework.cloud.netflix.ribbon.RibbonClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import spring.cloud.model.dto.response.ClientContactsResponse;
 import spring.cloud.model.dto.response.ClientResponse;
 import spring.cloud.model.dto.response.ClientsResponse;
 
+@RibbonClient(name = "client-service")
 @ReactiveFeignClient(name = "client-service")
 public interface ClientServiceProxy {
 
