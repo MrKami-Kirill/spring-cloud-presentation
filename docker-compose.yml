@@ -1,8 +1,5 @@
 version: '3.9'
 
-volumes:
-  volume1:
-
 networks:
   spring-cloud-net:
     driver: bridge
@@ -80,13 +77,15 @@ services:
       - '8079:8079'
     environment:
       SPRING_CLOUD_CONFIG_SERVER_GIT_URI: https://github.com/MrKami-Kirill/config-repo
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: http://kafka-server:9092
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: http://kafka-server-1:9092,http://kafka-server-2:9092,http://kafka-server-3:9092
       EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE: http://eureka-discovery-server-peer-1:8761/eureka/,http://eureka-discovery-server-peer-2:8762/eureka/,http://eureka-discovery-server-peer-3:8763/eureka/
     depends_on:
       - eureka-discovery-server-peer-1
       - eureka-discovery-server-peer-2
       - eureka-discovery-server-peer-3
-      - kafka-server
+      - kafka-server-1
+      - kafka-server-2
+      - kafka-server-3
 
   hystrix-dashboard:
     container_name: 'hystrix-dashboard'
@@ -117,7 +116,7 @@ services:
       - '8081:8081'
     environment:
       CONFIG_URI: http://configuration-server:8079
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: http://kafka-server:9092
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: http://kafka-server-1:9092,http://kafka-server-2:9092,http://kafka-server-3:9092
       SPRING_ZIPKIN_BASE_URL: http://zipkin-server:9411
       EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE: http://eureka-discovery-server-peer-1:8761/eureka/,http://eureka-discovery-server-peer-2:8762/eureka/,http://eureka-discovery-server-peer-3:8763/eureka/
     depends_on:
@@ -127,7 +126,9 @@ services:
       - hystrix-dashboard
       - configuration-server
       - client-service
-      - kafka-server
+      - kafka-server-1
+      - kafka-server-2
+      - kafka-server-3
       - zipkin-server
 
   client-service:
@@ -141,7 +142,7 @@ services:
       - '8082:8082'
     environment:
       CONFIG_URI: http://configuration-server:8079
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: http://kafka-server:9092
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: http://kafka-server-1:9092,http://kafka-server-2:9092,http://kafka-server-3:9092
       SPRING_ZIPKIN_BASE_URL: http://zipkin-server:9411
       EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE: http://eureka-discovery-server-peer-1:8761/eureka/,http://eureka-discovery-server-peer-2:8762/eureka/,http://eureka-discovery-server-peer-3:8763/eureka/
     depends_on:
@@ -151,30 +152,70 @@ services:
       - hystrix-dashboard
       - configuration-server
       - pg-server
-      - kafka-server
+      - kafka-server-1
+      - kafka-server-2
+      - kafka-server-3
       - zipkin-server
 
-  kafka-server:
+  kafka-server-1:
     image: bitnami/kafka:latest
-    container_name: kafka-server
+    container_name: kafka-server-1
     networks:
       - spring-cloud-net
-    ports:
-      - '9092:9092'
     environment:
       KAFKA_ENABLE_KRAFT: yes
       KAFKA_CFG_PROCESS_ROLES: broker,controller
       KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
       KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
-      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka-server:9092
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka-server-1:9092
       KAFKA_BROKER_ID: 1
-      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@kafka-server:9093
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@kafka-server-1:9093,2@kafka-server-2:9093,3@kafka-server-3:9093
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
       ALLOW_PLAINTEXT_LISTENER: yes
-      KAFKA_KRAFT_CLUSTER_ID: 7_m6HQvwR16qjsmuHv_Eqw
-    volumes:
-      - volume1:/bitnami/kafka
+      KAFKA_KRAFT_CLUSTER_ID: AsvgWbX9SDGupq3JxzJ9xw
+    depends_on:
+      - kafka-ui
+
+  kafka-server-2:
+    image: bitnami/kafka:latest
+    container_name: kafka-server-2
+    networks:
+      - spring-cloud-net
+    environment:
+      KAFKA_ENABLE_KRAFT: yes
+      KAFKA_CFG_PROCESS_ROLES: broker,controller
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka-server-2:9092
+      KAFKA_BROKER_ID: 2
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@kafka-server-1:9093,2@kafka-server-2:9093,3@kafka-server-3:9093
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
+      ALLOW_PLAINTEXT_LISTENER: yes
+      KAFKA_KRAFT_CLUSTER_ID: AsvgWbX9SDGupq3JxzJ9xw
+    depends_on:
+      - kafka-ui
+
+  kafka-server-3:
+    image: bitnami/kafka:latest
+    container_name: kafka-server-3
+    networks:
+      - spring-cloud-net
+    environment:
+      KAFKA_ENABLE_KRAFT: yes
+      KAFKA_CFG_PROCESS_ROLES: broker,controller
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka-server-3:9092
+      KAFKA_BROKER_ID: 3
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@kafka-server-1:9093,2@kafka-server-2:9093,3@kafka-server-3:9093
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
+      ALLOW_PLAINTEXT_LISTENER: yes
+      KAFKA_KRAFT_CLUSTER_ID: AsvgWbX9SDGupq3JxzJ9xw
+    depends_on:
+      - kafka-ui
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
@@ -184,7 +225,7 @@ services:
     ports:
       - '8080:8080'
     environment:
-      KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS: kafka-server:9092
+      KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS: kafka-server-1:9092,kafka-server-2:9092,kafka-server-3:9092
       KAFKA_CLUSTERS_0_NAME: kraft
 
 
@@ -193,12 +234,12 @@ services:
     container_name: pg-server
     networks:
       - spring-cloud-net
+    ports:
+      - '5432:5432'
     environment:
       POSTGRES_USER: spring_cloud_user
       POSTGRES_PASSWORD: r53x46MXEz&H
       POSTGRES_DB: db_client_data
-    ports:
-      - '5432:5432'
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
       - ./pg-server/init_db_client_data.sql:/docker-entrypoint-initdb.d/init_db_client_data.sql
