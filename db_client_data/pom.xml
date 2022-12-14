@@ -83,7 +83,7 @@
                     <!--propertyFile>config/liquibase.properties</propertyFile-->
                     <changeLogFile>changelog/changelog.xml</changeLogFile>
                     <dataDir>changelog/db</dataDir>
-                    <defaultSchemaName>db_client_data</defaultSchemaName>
+                    <defaultSchemaName>${postgres.schema.name}</defaultSchemaName>
                     <outputDefaultSchema>true</outputDefaultSchema>
                     <!-- log  -->
                     <verbose>true</verbose>

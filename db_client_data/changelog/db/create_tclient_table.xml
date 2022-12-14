@@ -6,7 +6,7 @@
   <changeSet id="create_tclient_table" author="galeev.kirill">
     <createTable schemaName="db_client_data" tableName="tclient">
       <column name="id" type="bigserial">
-        <constraints primaryKey="true" primaryKeyName="pkttclient_id"/>
+        <constraints primaryKey="true" primaryKeyName="pktclient_id"/>
       </column>
       <column name="sur_name" type="varchar(100)">
         <constraints nullable="false"/>

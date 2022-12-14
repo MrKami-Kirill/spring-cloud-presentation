@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS db_client_data.tclient
     first_name character varying(100) COLLATE pg_catalog."default" NOT NULL,
     middle_name character varying(100) COLLATE pg_catalog."default",
     birth_day date NOT NULL,
-    CONSTRAINT pkttclient_id PRIMARY KEY (id)
+    CONSTRAINT pktclient_id PRIMARY KEY (id)
     );
 
 CREATE TYPE IF NOT EXISTS db_client_data.contact_type AS ENUM ('EMAIL', 'MOBILE', 'LANDLINE');
