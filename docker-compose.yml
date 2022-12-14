@@ -1,5 +1,8 @@
 version: '3.9'
 
+volumes:
+  volume1:
+
 networks:
   spring-cloud-net:
     driver: bridge
@@ -74,7 +77,7 @@ services:
       context: .
       dockerfile: /configuration-server/Dockerfile
     ports:
-      - '8080:8080'
+      - '8079:8079'
     environment:
       SPRING_CLOUD_CONFIG_SERVER_GIT_URI: https://github.com/MrKami-Kirill/config-repo
       SPRING_KAFKA_BOOTSTRAP_SERVERS: http://kafka-server:9092
@@ -113,7 +116,7 @@ services:
     ports:
       - '8081:8081'
     environment:
-      CONFIG_URI: http://configuration-server:8080
+      CONFIG_URI: http://configuration-server:8079
       SPRING_KAFKA_BOOTSTRAP_SERVERS: http://kafka-server:9092
       SPRING_ZIPKIN_BASE_URL: http://zipkin-server:9411
       EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE: http://eureka-discovery-server-peer-1:8761/eureka/,http://eureka-discovery-server-peer-2:8762/eureka/,http://eureka-discovery-server-peer-3:8763/eureka/
@@ -137,7 +140,7 @@ services:
     ports:
       - '8082:8082'
     environment:
-      CONFIG_URI: http://configuration-server:8080
+      CONFIG_URI: http://configuration-server:8079
       SPRING_KAFKA_BOOTSTRAP_SERVERS: http://kafka-server:9092
       SPRING_ZIPKIN_BASE_URL: http://zipkin-server:9411
       EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE: http://eureka-discovery-server-peer-1:8761/eureka/,http://eureka-discovery-server-peer-2:8762/eureka/,http://eureka-discovery-server-peer-3:8763/eureka/
@@ -151,16 +154,6 @@ services:
       - kafka-server
       - zipkin-server
 
-  zookeeper-server:
-    image: bitnami/zookeeper:latest
-    container_name: zookeeper
-    networks:
-      - spring-cloud-net
-    ports:
-      - '2181:2181'
-    environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
-
   kafka-server:
     image: bitnami/kafka:latest
     container_name: kafka-server
@@ -168,15 +161,32 @@ services:
       - spring-cloud-net
     ports:
       - '9092:9092'
-    volumes:
-      - ~/.docker-conf/kafka/local/:/usr/local/
     environment:
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
-      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper-server:2181
+      KAFKA_ENABLE_KRAFT: yes
+      KAFKA_CFG_PROCESS_ROLES: broker,controller
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
       KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka-server:9092
+      KAFKA_BROKER_ID: 1
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@kafka-server:9093
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
       ALLOW_PLAINTEXT_LISTENER: yes
-    depends_on:
-      - zookeeper-server
+      KAFKA_KRAFT_CLUSTER_ID: 7_m6HQvwR16qjsmuHv_Eqw
+    volumes:
+      - volume1:/bitnami/kafka
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    networks:
+      - spring-cloud-net
+    ports:
+      - '8080:8080'
+    environment:
+      KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS: kafka-server:9092
+      KAFKA_CLUSTERS_0_NAME: kraft
+
 
   pg-server:
     image: postgres:latest
