@@ -26,11 +26,11 @@ spec:
       containers:
         - name: zipkin-server-container
           image: openzipkin/zipkin:latest
+          ports:
+            - containerPort: 9411
           env:
             - name: STORAGE_TYPE
               value: mem
-          ports:
-            - containerPort: 9411
   selector:
     matchLabels:
       app: zipkin-server

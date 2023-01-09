@@ -3,6 +3,8 @@ kind: Service
 metadata:
   name: kafka-ui-service
   namespace: spring-cloud
+  labels:
+    app: kafka-ui
 spec:
   ports:
     - port: 8080
@@ -24,13 +26,13 @@ spec:
       containers:
         - name: kafka-ui-container
           image: provectuslabs/kafka-ui:latest
+          ports:
+            - containerPort: 8080
           env:
             - name: KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS
               value: 'kafka-server-service:9092'
             - name: KAFKA_CLUSTERS_0_NAME
               value: 'kraft'
-          ports:
-            - containerPort: 8080
   selector:
     matchLabels:
       app: kafka-ui
