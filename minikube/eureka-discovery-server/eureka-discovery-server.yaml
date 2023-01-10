@@ -117,8 +117,6 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: 'peer-3'
-            - name: SPRING_ZIPKIN_BASE_URL
-              value: 'http://zipkin-server-service:9411'
             - name: EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE
               value: 'http://eureka-discovery-server-peer-1-service:8761/eureka/,
               http://eureka-discovery-server-peer-2-service:8762/eureka/'
