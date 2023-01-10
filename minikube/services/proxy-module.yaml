@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxy-module-service
+  namespace: spring-cloud
+  labels:
+    app: proxy-module
+spec:
+  ports:
+    - port: 8081
+  selector:
+    app: proxy-module
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxy-module-deployment
+  namespace: spring-cloud
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: proxy-module
+    spec:
+      containers:
+        - name: proxy-module-container
+          image: proxy-module:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8081
+          env:
+            - name: CONFIG_URI
+              value: 'http://configuration-server-service:8079'
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: 'http://kafka-server-service:9092'
+            - name: SPRING_ZIPKIN_BASE_URL
+              value: 'http://zipkin-server-service:9411'
+            - name: EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE
+              value: 'http://eureka-discovery-server-peer-1-service:8761/eureka/,
+              http://eureka-discovery-server-peer-2-service:8762/eureka/,
+              http://eureka-discovery-server-peer-3-service:8763/eureka/'
+  selector:
+    matchLabels:
+      app: proxy-module

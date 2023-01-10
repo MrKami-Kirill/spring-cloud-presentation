@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.7.5</version>
+    <version>2.7.7</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>spring.cloud</groupId>
@@ -22,11 +22,12 @@
     <r2dbc-postgresql.version>0.8.13.RELEASE</r2dbc-postgresql.version>
     <hystrix.version>2.2.10.RELEASE</hystrix.version>
     <spring-cloud-starter-zipkin.version>2.2.8.RELEASE</spring-cloud-starter-zipkin.version>
+    <spring-cloud-starter-kubernetes.version>1.1.10.RELEASE</spring-cloud-starter-kubernetes.version>
     <feign-reactor-spring-cloud-starter.version>3.2.6</feign-reactor-spring-cloud-starter.version>
-    <micrometer-registry-prometheus.version>1.10.0</micrometer-registry-prometheus.version>
+    <micrometer-registry-prometheus.version>1.10.2</micrometer-registry-prometheus.version>
     <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
     <maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
-    <checkstyle.version>10.4</checkstyle.version>
+    <checkstyle.version>10.6.0</checkstyle.version>
   </properties>
 
   <dependencies>
@@ -102,6 +103,11 @@
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-sleuth</artifactId>
     </dependency>
+<!--    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-kubernetes</artifactId>
+      <version>${spring-cloud-starter-kubernetes.version}</version>
+    </dependency>-->
     <dependency>
       <groupId>com.playtika.reactivefeign</groupId>
       <artifactId>feign-reactor-spring-cloud-starter</artifactId>

@@ -52,6 +52,7 @@ spec:
       containers:
         - name: eureka-discovery-server-peer-1-container
           image: eureka-discovery-server:latest
+          imagePullPolicy: Never
           ports:
             - containerPort: 8761
           env:
@@ -60,7 +61,7 @@ spec:
             - name: SPRING_ZIPKIN_BASE_URL
               value: 'http://zipkin-server-service:9411'
             - name: EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE
-              value: 'http://eureka-discovery-server-peer-2:8762/eureka/,http://eureka-discovery-server-peer-3:8763/eureka/'
+              value: 'http://eureka-discovery-server-peer-2-service:8762/eureka/,http://eureka-discovery-server-peer-3-service:8763/eureka/'
   selector:
     matchLabels:
       app: eureka-discovery-server-peer-1
@@ -80,6 +81,7 @@ spec:
       containers:
         - name: eureka-discovery-server-peer-2-container
           image: eureka-discovery-server:latest
+          imagePullPolicy: Never
           ports:
             - containerPort: 8762
           env:
@@ -88,7 +90,8 @@ spec:
             - name: SPRING_ZIPKIN_BASE_URL
               value: 'http://zipkin-server-service:9411'
             - name: EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE
-              value: 'http://eureka-discovery-server-peer-1:8761/eureka/,http://eureka-discovery-server-peer-3:8763/eureka/'
+              value: 'http://eureka-discovery-server-peer-1-service:8761/eureka/,
+              http://eureka-discovery-server-peer-3-service:8763/eureka/'
   selector:
     matchLabels:
       app: eureka-discovery-server-peer-2
@@ -108,6 +111,7 @@ spec:
       containers:
         - name: eureka-discovery-server-peer-3-container
           image: eureka-discovery-server:latest
+          imagePullPolicy: Never
           ports:
             - containerPort: 8763
           env:
@@ -116,7 +120,8 @@ spec:
             - name: SPRING_ZIPKIN_BASE_URL
               value: 'http://zipkin-server-service:9411'
             - name: EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE
-              value: 'http://eureka-discovery-server-peer-1:8761/eureka/,http://eureka-discovery-server-peer-2:8762/eureka/'
+              value: 'http://eureka-discovery-server-peer-1-service:8761/eureka/,
+              http://eureka-discovery-server-peer-2-service:8762/eureka/'
   selector:
     matchLabels:
       app: eureka-discovery-server-peer-3

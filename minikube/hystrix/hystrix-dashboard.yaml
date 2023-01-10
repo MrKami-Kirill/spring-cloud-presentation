@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hystrix-dashboard-service
+  namespace: spring-cloud
+  labels:
+    app: hystrix-dashboard
+spec:
+  ports:
+    - port: 8076
+  selector:
+    app: hystrix-dashboard
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hystrix-dashboard-deployment
+  namespace: spring-cloud
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: hystrix-dashboard
+    spec:
+      containers:
+        - name: hystrix-dashboard-container
+          image: hystrix-dashboard:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8076
+          env:
+            - name: SPRING_ZIPKIN_BASE_URL
+              value: 'http://zipkin-server-service:9411'
+            - name: EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE
+              value: 'http://eureka-discovery-server-peer-1-service:8761/eureka/,
+              http://eureka-discovery-server-peer-2-service:8762/eureka/,
+              http://eureka-discovery-server-peer-3-service:8763/eureka/'
+  selector:
+    matchLabels:
+      app: hystrix-dashboard

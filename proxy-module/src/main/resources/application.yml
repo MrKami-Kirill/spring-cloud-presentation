@@ -102,3 +102,8 @@ reactive:
             writeTimeoutMillis: 2000
             responseTimeoutMillis: 2000
 
+ribbon:
+  http:
+    client:
+      enabled: true
+
