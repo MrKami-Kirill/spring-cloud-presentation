@@ -78,7 +78,7 @@
                     <!--localhost -->
                     <!--<url>jdbc:postgresql://localhost:5432/db_client_data</url> -->
                     <!--minikube node -->
-                    <url>jdbc:postgresql://192.168.59.100:30360/db_client_data</url>
+                    <url>jdbc:postgresql://pg-server-service:30360/db_client_data</url>
                     <!--suppress UnresolvedMavenProperty -->
                     <username>spring_cloud_user</username>
                     <!--suppress UnresolvedMavenProperty -->

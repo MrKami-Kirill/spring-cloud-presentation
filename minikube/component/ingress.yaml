@@ -1,0 +1,53 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-resource-backend
+  namespace: spring-cloud
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: zipkin-spring-cloud.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: zipkin-server-service
+                port:
+                  number: 9411
+    - host: kafka-ui-spring-cloud.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: kafka-ui-service
+                port:
+                  number: 8080
+    - host: eureka-spring-cloud.com
+      http:
+        paths:
+          - path: /peer-1
+            pathType: Prefix
+            backend:
+              service:
+                name: eureka-discovery-server-peer-1-service
+                port:
+                  number: 8761
+          - path: /peer-2
+            pathType: Prefix
+            backend:
+              service:
+                name: eureka-discovery-server-peer-2-service
+                port:
+                  number: 8762
+          - path: /peer-3
+            pathType: Prefix
+            backend:
+              service:
+                name: eureka-discovery-server-peer-3-service
+                port:
+                  number: 8763

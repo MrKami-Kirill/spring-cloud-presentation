@@ -25,20 +25,20 @@ spec:
     - ReadWriteMany
   hostPath:
     path: "/mnt/data"
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: pg-server-pv-claim
-  labels:
-    app: pg-server
-spec:
-  storageClassName: manual
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 1Gi
+#---
+#apiVersion: v1
+#kind: PersistentVolumeClaim
+#metadata:
+#  name: pg-server-pv-claim
+#  labels:
+#    app: pg-server
+#spec:
+#  storageClassName: manual
+#  accessModes:
+#    - ReadWriteMany
+#  resources:
+#    requests:
+#      storage: 1Gi
 ---
 apiVersion: v1
 kind: Service
@@ -83,8 +83,8 @@ spec:
               name: postgredb
       volumes:
         - name: postgredb
-          persistentVolumeClaim:
-            claimName: pg-server-pv-claim
+#          persistentVolumeClaim:
+#            claimName: pg-server-pv-claim
   selector:
     matchLabels:
       app: pg-server
