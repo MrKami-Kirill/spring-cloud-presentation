@@ -10,7 +10,7 @@ GET https://spring-cloud.proxy-module.com/proxy-module/getClientById/1
 Content-Type: application/json
 
 ###
-GET https://spring-cloud.proxy-module.com/proxy-module/getClientContacts/2
+GET https://spring-cloud.proxy-module.com/proxy-module/getClientContacts/1
 Content-Type: application/json
 
 ###
