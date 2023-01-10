@@ -58,8 +58,6 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: 'peer-1'
-            - name: SPRING_ZIPKIN_BASE_URL
-              value: 'http://zipkin-server-service:9411'
             - name: EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE
               value: 'http://eureka-discovery-server-peer-2-service:8762/eureka/,http://eureka-discovery-server-peer-3-service:8763/eureka/'
   selector:
@@ -87,8 +85,6 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: 'peer-2'
-            - name: SPRING_ZIPKIN_BASE_URL
-              value: 'http://zipkin-server-service:9411'
             - name: EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE
               value: 'http://eureka-discovery-server-peer-1-service:8761/eureka/,
               http://eureka-discovery-server-peer-3-service:8763/eureka/'
