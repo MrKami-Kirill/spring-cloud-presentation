@@ -17,13 +17,13 @@
   <properties>
     <java.version>17</java.version>
     <spring-cloud.version>2021.0.5</spring-cloud.version>
-    <postgresql.version>42.5.0</postgresql.version>
-    <reactor-pool.version>0.2.10</reactor-pool.version>
+    <postgresql.version>42.5.1</postgresql.version>
+    <reactor-pool.version>1.0.0</reactor-pool.version>
     <r2dbc-postgresql.version>0.8.13.RELEASE</r2dbc-postgresql.version>
     <hystrix.version>2.2.10.RELEASE</hystrix.version>
     <spring-cloud-starter-zipkin.version>2.2.8.RELEASE</spring-cloud-starter-zipkin.version>
     <spring-cloud-starter-kubernetes.version>1.1.10.RELEASE</spring-cloud-starter-kubernetes.version>
-    <feign-reactor-spring-cloud-starter.version>3.2.6</feign-reactor-spring-cloud-starter.version>
+    <kafka-clients.version>3.3.1</kafka-clients.version>
     <micrometer-registry-prometheus.version>1.10.2</micrometer-registry-prometheus.version>
     <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
     <maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
@@ -108,18 +108,12 @@
       <artifactId>spring-cloud-starter-kubernetes</artifactId>
       <version>${spring-cloud-starter-kubernetes.version}</version>
     </dependency>-->
-    <dependency>
-      <groupId>com.playtika.reactivefeign</groupId>
-      <artifactId>feign-reactor-spring-cloud-starter</artifactId>
-      <version>${feign-reactor-spring-cloud-starter.version}</version>
-      <type>pom</type>
-    </dependency>
 
     <!-- KAFKA -->
     <dependency>
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka-clients</artifactId>
-      <version>3.3.1</version>
+      <version>${kafka-clients.version}</version>
     </dependency>
 
     <!-- PROMETHEUS -->
